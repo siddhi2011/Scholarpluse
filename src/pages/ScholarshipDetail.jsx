@@ -51,9 +51,26 @@ export default function ScholarshipDetail() {
         return 'saved';
       }
     },
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['saved-scholarships'] });
+      const previous = queryClient.getQueryData(['saved-scholarships']) || [];
+      const existing = previous.find(s => s.scholarship_id === id);
+      if (existing) {
+        queryClient.setQueryData(['saved-scholarships'], previous.filter(s => s.id !== existing.id));
+      } else {
+        const optimistic = { id: `temp-${Date.now()}`, scholarship_id: id, status: 'saved', created_date: new Date().toISOString() };
+        queryClient.setQueryData(['saved-scholarships'], [...previous, optimistic]);
+      }
+      return { previous };
+    },
     onSuccess: (action) => {
+      if (action === 'saved') toast.success('Saved! +10 XP');
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) queryClient.setQueryData(['saved-scholarships'], context.previous);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['saved-scholarships'] });
-      if (action === 'saved') toast.success('Saved! +10 XP 🎯');
     },
   });
 

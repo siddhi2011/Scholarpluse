@@ -10,8 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Save, User, GraduationCap, Trophy, DollarSign, Heart, Globe, Briefcase, Send } from 'lucide-react';
-import { EDUCATION_LEVELS, MAJORS, US_STATES, CITIZENSHIP_OPTIONS } from '@/lib/educationLevels';
+import { Save, User, GraduationCap, Trophy, DollarSign, Heart, Briefcase, Send, Trash2, AlertTriangle } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { useAuth } from '@/lib/AuthContext';
+import { EDUCATION_LEVELS, MAJORS, US_STATES } from '@/lib/educationLevels';
 import { toast } from 'sonner';
 
 const CITIZENSHIP_WITH_VISA = [
@@ -138,6 +140,8 @@ export default function Profile() {
     queryFn: () => db.auth.me(),
   });
 
+  const { logout } = useAuth();
+  const [deletePending, setDeletePending] = useState(false);
   const [profile, setProfile] = useState(EMPTY_PROFILE);
 
   useEffect(() => {
@@ -296,6 +300,41 @@ export default function Profile() {
         <Save className="h-4 w-4" />
         {saveMutation.isPending ? 'Saving...' : 'Save Profile'}
       </Button>
+
+      {/* Danger Zone */}
+      <div className="pt-6 border-t border-border">
+        <h3 className="text-sm font-semibold text-destructive mb-3">Danger Zone</h3>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" className="gap-2 text-destructive border-destructive/30 hover:bg-destructive/10 hover:border-destructive">
+              <Trash2 className="h-4 w-4" /> Delete Account
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5 text-destructive" /> Delete Account
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete your account and remove all of your data from our servers, including saved scholarships, essays, and documents.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                onClick={() => {
+                  setDeletePending(true);
+                  logout(true);
+                }}
+                disabled={deletePending}
+              >
+                {deletePending ? 'Deleting...' : 'Delete Account'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </div>
   );
 }

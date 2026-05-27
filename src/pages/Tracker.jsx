@@ -36,7 +36,20 @@ export default function Tracker() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => db.entities.SavedScholarship.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['saved-scholarships'] }),
+    onMutate: async ({ id, data }) => {
+      await queryClient.cancelQueries({ queryKey: ['saved-scholarships'] });
+      const previous = queryClient.getQueryData(['saved-scholarships']) || [];
+      queryClient.setQueryData(['saved-scholarships'], previous.map(s =>
+        s.id === id ? { ...s, ...data } : s
+      ));
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) queryClient.setQueryData(['saved-scholarships'], context.previous);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['saved-scholarships'] });
+    },
   });
 
   const deleteMutation = useMutation({

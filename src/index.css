@@ -85,6 +85,10 @@
   body {
     @apply bg-background text-foreground font-sans;
     font-family: var(--font-sans);
+    overscroll-behavior-y: none;
+  }
+  button, a[role="button"], [data-sidebar="menu-button"], nav a {
+    user-select: none;
   }
   ::selection {
     background: hsl(var(--primary) / 0.2);
