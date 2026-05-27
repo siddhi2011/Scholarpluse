@@ -135,17 +135,14 @@ const EMPTY_PROFILE = {
 };
 
 export default function Profile() {
-  const { data: user, isLoading } = useQuery({
-    queryKey: ['current-user'],
-    queryFn: () => db.auth.me(),
-  });
-
-  const { logout } = useAuth();
+  const { user, updateUser, logout } = useAuth();
   const [deletePending, setDeletePending] = useState(false);
   const [profile, setProfile] = useState(EMPTY_PROFILE);
+  const [fullName, setFullName] = useState('');
 
   useEffect(() => {
     if (user) {
+      setFullName(user.full_name || '');
       setProfile(prev => ({
         ...prev,
         ...Object.fromEntries(Object.keys(EMPTY_PROFILE).map(k => [k, user[k] ?? ''])),
@@ -155,10 +152,14 @@ export default function Profile() {
   }, [user]);
 
   const saveMutation = useMutation({
-    mutationFn: (data) => db.auth.updateMe({
-      ...data,
-      first_gen: data.first_gen === 'true' ? true : data.first_gen === 'false' ? false : undefined,
-    }),
+    mutationFn: (data) => {
+      updateUser({
+        ...data,
+        full_name: fullName,
+        first_gen: data.first_gen === 'true' ? true : data.first_gen === 'false' ? false : undefined,
+      });
+      return Promise.resolve();
+    },
     onSuccess: () => toast.success('Profile saved! Scholarship matches updated.'),
   });
 
@@ -168,12 +169,6 @@ export default function Profile() {
   const filledFields = Object.values(profile).filter(v => v !== '' && v !== undefined).length;
   const totalFields = Object.keys(EMPTY_PROFILE).length;
   const pct = Math.round((filledFields / totalFields) * 100);
-
-  if (isLoading) return (
-    <div className="flex items-center justify-center py-12">
-      <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-    </div>
-  );
 
   const handleFeedback = () => {
     const subject = encodeURIComponent('ScholarshipHub Feedback');
@@ -204,7 +199,7 @@ export default function Profile() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label>Full Name</Label>
-            <Input value={user?.full_name || ''} disabled className="mt-1.5 bg-muted" />
+            <Input value={fullName} onChange={e => setFullName(e.target.value)} className="mt-1.5" />
           </div>
           <div>
             <Label>Email</Label>

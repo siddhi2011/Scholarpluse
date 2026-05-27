@@ -17,9 +17,10 @@ import Profile from '@/pages/Profile';
 import Resume from '@/pages/Resume';
 import Brainstorm from '@/pages/Brainstorm';
 import Documents from '@/pages/Documents';
+import Login from '@/pages/Login';
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, login } = useAuth();
 
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
@@ -27,6 +28,10 @@ const AuthenticatedApp = () => {
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
       </div>
     );
+  }
+
+  if (!isAuthenticated) {
+    return <Login onLoginSuccess={login} />;
   }
 
   if (authError) {
