@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Save, User, GraduationCap, Trophy, DollarSign, Heart, Briefcase, Send, Trash2, AlertTriangle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { useAuth } from '@/lib/AuthContext';
+import { useAuth } from '@/lib/AuthContext.local';
 import { EDUCATION_LEVELS, MAJORS, US_STATES } from '@/lib/educationLevels';
 import { toast } from 'sonner';
 
