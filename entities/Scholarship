@@ -1,0 +1,180 @@
+{
+  "name": "Scholarship",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Name of the scholarship"
+    },
+    "provider": {
+      "type": "string",
+      "description": "Organization offering the scholarship"
+    },
+    "description": {
+      "type": "string",
+      "description": "Full description of the scholarship"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Award amount in USD"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date",
+      "description": "Application deadline"
+    },
+    "apply_url": {
+      "type": "string",
+      "description": "Official application URL"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "merit",
+        "need_based",
+        "athletic",
+        "stem",
+        "arts",
+        "community_service",
+        "diversity",
+        "essay",
+        "first_gen",
+        "business",
+        "medical",
+        "law",
+        "education",
+        "military",
+        "religious",
+        "other"
+      ],
+      "description": "Scholarship category"
+    },
+    "education_level_min": {
+      "type": "string",
+      "enum": [
+        "high_school_freshman",
+        "high_school_sophomore",
+        "high_school_junior",
+        "high_school_senior",
+        "undergraduate",
+        "graduate"
+      ]
+    },
+    "education_level_max": {
+      "type": "string",
+      "enum": [
+        "high_school_freshman",
+        "high_school_sophomore",
+        "high_school_junior",
+        "high_school_senior",
+        "undergraduate",
+        "graduate"
+      ]
+    },
+    "gpa_requirement": {
+      "type": "number",
+      "description": "Minimum GPA required (0-4.0)"
+    },
+    "requirements": {
+      "type": "string",
+      "description": "Eligibility requirements"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "essay_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "essay_prompt": {
+      "type": "string",
+      "description": "The exact essay prompt or question the student must answer"
+    },
+    "ai_allowed": {
+      "type": "boolean",
+      "default": true
+    },
+    "renewable": {
+      "type": "boolean",
+      "default": false
+    },
+    "num_winners": {
+      "type": "number"
+    },
+    "state": {
+      "type": "string",
+      "description": "State restriction (blank = national)"
+    },
+    "major": {
+      "type": "string"
+    },
+    "citizenship": {
+      "type": "string",
+      "enum": [
+        "us_citizen",
+        "permanent_resident",
+        "any",
+        "international",
+        "daca"
+      ],
+      "default": "us_citizen"
+    },
+    "ethnicity": {
+      "type": "string"
+    },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "any",
+        "female",
+        "male",
+        "non_binary"
+      ],
+      "default": "any"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "easy",
+        "medium",
+        "hard",
+        "very_hard"
+      ]
+    },
+    "avg_time_hours": {
+      "type": "number"
+    },
+    "verified": {
+      "type": "boolean",
+      "default": true
+    },
+    "tags": {
+      "type": "string",
+      "description": "Comma-separated searchable tags"
+    }
+  },
+  "required": [
+    "title",
+    "apply_url",
+    "deadline"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": true,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
